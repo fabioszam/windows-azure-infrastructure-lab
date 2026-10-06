@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O laboratório atualmente está sendo executado no VirtualBox e conta com um Domain Controller Windows Server 2025 e um cliente Windows 11.
+O laboratório atualmente está sendo executado no VirtualBox e conta com um Domain Controller Windows Server 2025, um File Server Windows Server 2025 e um cliente Windows 11.
 
 São utilizados dois tipos de rede virtual:
 
@@ -19,28 +19,28 @@ A rede Host-Only é utilizada para a comunicação interna do laboratório, incl
                        VirtualBox NAT
                             DHCP
                               │
-                 ┌────────────┴────────────┐
-                 │                         │
-               DC01                      CL01
-                 │                         │
-                 └──────────┬──────────────┘
-                            │
-                       Rede Host-Only
-                      192.168.56.0/24
-                            │
-          ┌─────────────────┼─────────────────┐
-          │                 │                 │
-      Host .1           DC01 .10          CL01 .100
-                            │
-                       AD DS / DNS
-                    corp.example.com
+           ┌──────────────────┼──────────────────┐
+           │                  │                  │
+         DC01               SRV01              CL01
+           │                  │                  │
+           └──────────────────┼──────────────────┘
+                              │
+                         Rede Host-Only
+                        192.168.56.0/24
+                              │
+          ┌───────────────────┼───────────────────┬───────────────────┐
+          │                   │                   │                   │
+      Host .1             DC01 .10           SRV01 .20          CL01 .100
+                              │                   │
+                         AD DS / DNS          File Server
+                      corp.example.com
 ```
 
 ## Redes Virtuais
 
 ### NAT
 
-As duas máquinas virtuais possuem um adaptador NAT configurado pelo VirtualBox.
+As três máquinas virtuais possuem um adaptador NAT configurado pelo VirtualBox.
 
 As interfaces NAT utilizam DHCP e são responsáveis pelo acesso à rede externa. Essas interfaces ficam separadas da rede interna utilizada pelo Active Directory.
 
@@ -62,6 +62,7 @@ Configuração atual:
 | --- | --- | --- |
 | Host físico | Interface Host-Only do VirtualBox | `192.168.56.1` |
 | DC01 | Domain Controller e servidor DNS | `192.168.56.10` |
+| SRV01 | File Server | `192.168.56.20` |
 | CL01 | Cliente Windows do domínio | `192.168.56.100` |
 
 ## DC01
@@ -88,6 +89,23 @@ O endereço utilizado internamente pelo Active Directory e DNS é:
 ```text
 DC01.corp.example.com
 192.168.56.10
+```
+
+## SRV01
+
+O `SRV01` é uma máquina virtual com Windows Server 2025 e membro do domínio `corp.example.com`.
+
+Função atual:
+
+- File Server
+
+Configuração de rede:
+
+```text
+NAT:            DHCP
+Host-Only:      192.168.56.20/24
+Gateway:        nenhum na Host-Only
+Preferred DNS:  192.168.56.10
 ```
 
 ## CL01

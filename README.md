@@ -6,19 +6,20 @@ Este repositório documenta o ambiente conforme ele é construído e testado.
 
 ## Foco Atual
 
-No momento, o laboratório está focado em **infraestrutura Windows**.
+No momento, estou finalizando a parte de **infraestrutura Windows** do laboratório.
 
-O que já foi implementado até agora:
+O que já foi implementado:
 
-- Instalação do Windows Server 2025
+- Windows Server 2025
 - Active Directory Domain Services
-- Configuração do DNS
-- Configuração do Reverse DNS
-- Instalação do cliente Windows 11 Enterprise
-- Configuração de rede do cliente
-- Ingresso do cliente no domínio
-- Autenticação no domínio
-- Troubleshooting da infraestrutura
+- DNS e Reverse DNS
+- Windows 11 Enterprise integrado ao domínio
+- Organizational Units, usuários e grupos
+- Group Policy
+- Member Server
+- File Server e compartilhamento SMB
+- Permissões NTFS e Share utilizando grupos de segurança
+- Troubleshooting de rede e DNS
 
 ## Ambiente Atual
 
@@ -28,6 +29,10 @@ Host
     ├── DC01
     │   ├── NAT:       DHCP
     │   └── Host-Only: 192.168.56.10
+    │
+    ├── SRV01
+    │   ├── NAT:       DHCP
+    │   └── Host-Only: 192.168.56.20
     │
     └── CL01
         ├── NAT:       DHCP
@@ -42,7 +47,7 @@ Host:          192.168.56.1
 DHCP Server:   Desabilitado
 ```
 
-Dentro da rede Host-Only são utilizados endereços IP estáticos.
+Na rede Host-Only, os endereços IPv4 são configurados manualmente.
 
 ### Active Directory
 
@@ -53,19 +58,33 @@ Domain Controller:  DC01
 DNS Server:         192.168.56.10
 ```
 
-O `CL01` já foi adicionado ao domínio e a autenticação com uma conta do domínio foi testada com sucesso.
+Atualmente, o ambiente conta com:
+
+- `DC01` como Domain Controller e servidor DNS;
+- `SRV01` como File Server;
+- `CL01` como cliente Windows.
+
+## File Server
+
+O `SRV01` disponibiliza o seguinte compartilhamento:
+
+```text
+\\SRV01\Shared
+```
+
+O acesso é configurado utilizando grupos de segurança do Active Directory, junto com permissões NTFS e Share.
 
 ## Troubleshooting
 
-Até agora, os principais casos foram:
+Os principais casos documentados até agora são:
 
-1. Problema relacionado à configuração de horário identificado durante o processo de promoção do Domain Controller.
-2. Registro indesejado no DNS relacionado à interface NAT do Domain Controller com múltiplas interfaces de rede.
-3. Windows 11 Enterprise OOBE solicitando uma conta corporativa ou escolar durante a configuração inicial.
-4. Conflito de endereço IP na rede Host-Only do VirtualBox, que afetou a descoberta do Domain Controller pelo cliente.
+1. Conflito de endereço IP na rede Host-Only do VirtualBox que impedia o ingresso do `CL01` no domínio.
+2. Registro indesejado do endereço da interface NAT do `DC01` na zona DNS do domínio.
 
-## Escopo
+## Documentação
 
-Este é um laboratório criado para estudo e também para fazer parte do meu portfólio.
-
-O objetivo é colocar em prática e demonstrar conhecimentos de administração de infraestrutura e troubleshooting dentro de um ambiente controlado.
+- [Arquitetura do laboratório](https://chatgpt.com/c/docs/architecture/architecture.md)
+- [Active Directory e DNS](https://chatgpt.com/c/docs/windows/active-directory-dns.md)
+- [Operações básicas do Active Directory](https://chatgpt.com/c/docs/windows/basic-ad-operations.md)
+- [Compartilhamento de arquivos e permissões](https://chatgpt.com/c/docs/windows/file-share-permissions.md)
+- [Troubleshooting](https://chatgpt.com/c/docs/troubleshooting/troubleshooting.md)
