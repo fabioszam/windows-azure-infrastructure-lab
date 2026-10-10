@@ -2,14 +2,14 @@
 
 ## Visão Geral
 
-O laboratório atualmente está sendo executado no VirtualBox e conta com um Domain Controller Windows Server 2025, um File Server Windows Server 2025 e um cliente Windows 11.
+O laboratório atualmente está sendo executado no VirtualBox e conta com dois servidores Windows Server 2025 e um cliente Windows 11.
 
 São utilizados dois tipos de rede virtual:
 
 - **NAT** para acesso à rede externa e internet.
 - **Host-Only** para a comunicação entre as máquinas do laboratório e o host físico.
 
-A rede Host-Only é utilizada para a comunicação interna do laboratório, incluindo Active Directory e DNS.
+A rede Host-Only é utilizada para a comunicação interna do laboratório, incluindo Active Directory, DNS e DHCP.
 
 ## Topologia Atual
 
@@ -32,7 +32,7 @@ A rede Host-Only é utilizada para a comunicação interna do laboratório, incl
           │                   │                   │                   │
       Host .1             DC01 .10           SRV01 .20          CL01 .100
                               │                   │
-                         AD DS / DNS          File Server
+                         AD DS / DNS          File Server / DHCP
                       corp.example.com
 ```
 
@@ -49,12 +49,12 @@ As interfaces NAT utilizam DHCP e são responsáveis pelo acesso à rede externa
 A rede interna utilizada pelo laboratório está configurada da seguinte forma:
 
 ```text
-Network:       192.168.56.0/24
-Host:          192.168.56.1
-DHCP Server:   Desabilitado
+Network:      192.168.56.0/24
+Host:         192.168.56.1
+DHCP Server:  SRV01 (192.168.56.20)
 ```
 
-Na rede Host-Only, os endereços IPv4 são configurados manualmente.
+O `DC01` e o `SRV01` utilizam endereços estáticos. O `CL01` recebe o endereço `192.168.56.100` através de uma reserva DHCP.
 
 Configuração atual:
 
@@ -62,7 +62,7 @@ Configuração atual:
 | --- | --- | --- |
 | Host físico | Interface Host-Only do VirtualBox | `192.168.56.1` |
 | DC01 | Domain Controller e servidor DNS | `192.168.56.10` |
-| SRV01 | File Server | `192.168.56.20` |
+| SRV01 | File Server e servidor DHCP | `192.168.56.20` |
 | CL01 | Cliente Windows do domínio | `192.168.56.100` |
 
 ## DC01
@@ -95,9 +95,10 @@ DC01.corp.example.com
 
 O `SRV01` é uma máquina virtual com Windows Server 2025 e membro do domínio `corp.example.com`.
 
-Função atual:
+Funções atuais:
 
 - File Server
+- DHCP Server
 
 Configuração de rede:
 
@@ -116,7 +117,7 @@ Configuração de rede:
 
 ```text
 NAT:       DHCP
-Host-Only: 192.168.56.100/24
+Host-Only: 192.168.56.100/24 (reserva DHCP)
 Gateway:   nenhum na Host-Only
 DNS:       192.168.56.10
 ```
