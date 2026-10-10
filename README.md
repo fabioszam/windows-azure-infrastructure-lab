@@ -13,6 +13,7 @@ O que já foi implementado:
 - Windows Server 2025
 - Active Directory Domain Services
 - DNS e Reverse DNS
+- DHCP Server
 - Windows 11 Enterprise integrado ao domínio
 - Organizational Units, usuários e grupos
 - Group Policy
@@ -42,12 +43,14 @@ Host
 ### Rede Host-Only
 
 ```text
-Network:       192.168.56.0/24
-Host:          192.168.56.1
-DHCP Server:   Desabilitado
+Network:                  192.168.56.0/24
+Host:                     192.168.56.1
+VirtualBox DHCP Server:   Desabilitado
+Windows DHCP Server:      192.168.56.20
+DHCP Scope:               192.168.56.100 - 192.168.56.120
 ```
 
-Na rede Host-Only, os endereços IPv4 são configurados manualmente.
+O `DC01` e o `SRV01` utilizam endereços estáticos na rede Host-Only. O `CL01` recebe o endereço `192.168.56.100` através de uma reserva DHCP.
 
 ### Active Directory
 
@@ -61,7 +64,7 @@ DNS Server:         192.168.56.10
 Atualmente, o ambiente conta com:
 
 - `DC01` como Domain Controller e servidor DNS;
-- `SRV01` como File Server;
+- `SRV01` como File Server e servidor DHCP;
 - `CL01` como cliente Windows.
 
 ## File Server
@@ -83,8 +86,9 @@ Os principais casos documentados até agora são:
 
 ## Documentação
 
-- [Arquitetura do laboratório](https://chatgpt.com/c/docs/architecture/architecture.md)
-- [Active Directory e DNS](https://chatgpt.com/c/docs/windows/active-directory-dns.md)
-- [Operações básicas do Active Directory](https://chatgpt.com/c/docs/windows/basic-ad-operations.md)
-- [Compartilhamento de arquivos e permissões](https://chatgpt.com/c/docs/windows/file-share-permissions.md)
-- [Troubleshooting](https://chatgpt.com/c/docs/troubleshooting/troubleshooting.md)
+- [Arquitetura do laboratório](docs/architecture/architecture.md)
+- [Active Directory e DNS](docs/windows/active-directory-dns.md)
+- [Operações básicas do Active Directory](docs/windows/basic-ad-operations.md)
+- [Compartilhamento de arquivos e permissões](docs/windows/file-share-permissions.md)
+- [DHCP](docs/windows/dhcp.md)
+- [Troubleshooting](docs/troubleshooting/troubleshooting.md)
